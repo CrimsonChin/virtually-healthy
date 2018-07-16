@@ -24,7 +24,7 @@ class App extends Component {
       age: age
     });
 
-    this.workings(age, this.state.gender, this.state.weight);
+    this.calculateRestingMetabolicRate(age, this.state.gender, this.state.weight);
   }
 
   handleGenderChange = (gender) => {
@@ -33,7 +33,7 @@ class App extends Component {
       gender: gender
     });
 
-    this.workings(this.state.age, gender, this.state.weight);
+    this.calculateRestingMetabolicRate(this.state.age, gender, this.state.weight);
   }
 
   handleActivityLevelChange = (e) => {
@@ -41,7 +41,7 @@ class App extends Component {
       activityLevel: e
     });
 
-    // this.workings();
+    // this.calculateRestingMetabolicRate();
   }
 
   updateInputValue = (e) => {
@@ -55,10 +55,10 @@ class App extends Component {
       weight: weight
     });
 
-    this.workings(this.state.age, this.state.gender, weight);
+    this.calculateRestingMetabolicRate(this.state.age, this.state.gender, weight);
   }
 
-  workings(age, gender, weight) {
+  calculateRestingMetabolicRate(age, gender, weight) {
     let rmr = CalcuateRMR(age, gender, weight);
     this.setState({
       rmr: rmr
@@ -69,7 +69,7 @@ class App extends Component {
     return (
       <Grid>
         <Row>
-          <h1>RMR Calculator</h1>
+          <h1>Resting Metablic Rate Calculator</h1>
         </Row>
           <Row>
             <Col md={12}>
