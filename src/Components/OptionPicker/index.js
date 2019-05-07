@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Form } from 'react-bootstrap'
 
 class OptionPicker extends Component {
     
@@ -9,14 +10,13 @@ class OptionPicker extends Component {
     
   render() {
     return (
-      <select defaultValue={this.props.defaultOption}
-              onChange={this.handleOptionChange}>
+      <Form.Control as="select" value={this.props.defaultOption} onChange={x => this.handleOptionChange(x)}>
         {Object.keys(this.props.options).map((key, i) => (
-              <option key={key} value={this.props.options[key]} >
-                {this.props.options[key]}
-              </option>
-       ))}
-      </select>
+          <option key={key} value={this.props.options[key]} >
+            {this.props.options[key]}
+          </option>
+        ))}
+      </Form.Control>
     );
   }
 }

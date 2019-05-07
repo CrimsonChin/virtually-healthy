@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, InputGroup, FormControl, FormGroup } from 'react-bootstrap'
+import { Container, Row, Col, Button, Form } from 'react-bootstrap'
 import OptionPicker from './Components/OptionPicker';
 import AgeRange from './AgeRange';
 import Gender from './Gender';
@@ -8,12 +8,20 @@ import { CalcuateRMR } from './RestingMetabolicRateCalculator';
 
 class App extends Component {
 
-  state = {
-    age: AgeRange.nineteenToThirty,
-    gender: Gender.male,
-    activityLevel: DailyActivityLevel.seatedOrStanding,
-    weight: 0
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      validated: false,
+
+      age: AgeRange.thirtyOneToSixty,
+      gender: Gender.male,
+      activityLevel: DailyActivityLevel.seatedOrStanding,
+      weight: 68.6
+    }
   }
+
+
 
   componentWillMount() {
     document.title = 'Virtually Healthy'
@@ -41,7 +49,8 @@ class App extends Component {
       activityLevel: e
     });
 
-    // this.calculateRestingMetabolicRate();
+    // activity level inslt included
+    //this.calculateRestingMetabolicRate(this.state.age, this.state.gender, e);
   }
 
   updateInputValue = (e) => {
@@ -65,40 +74,78 @@ class App extends Component {
     });
   }
 
+  handleSubmit(event) {
+    // const form = event.currentTarget;
+    // if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    // }
+
+    // TODO validate
+    // TODO do we need to handle onChange?
+    this.setState({ validated: true });
+
+    this.calculateRestingMetabolicRate(this.state.age, this.state.gender, this.state.weight);
+  }
+
   render() {
+    const { validated } = this.state
+
     return (
-      <Grid>
+      <Container>
         <Row>
           <h1>Resting Metablic Rate Calculator</h1>
         </Row>
-          <Row>
-            <Col md={12}>
-            <OptionPicker options={AgeRange} defaultOption={this.state.age} onOptionChange={this.handleAgeChange} />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
-              <OptionPicker options={Gender} defaultOption={this.state.gender} onOptionChange={this.handleGenderChange} />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
-              <input type="text" onChange={evt => this.updateInputValue(evt)} />
-            </Col>
-          </Row>
-          <Row>
+        <Row>
+            <Form         
+              noValidate
+              validated={ this.state.validated }
+              onSubmit={e => this.handleSubmit(e)}>
+              <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Label column sm="4">Age</Form.Label>
+                <Col sm="8">
+                  <OptionPicker options={AgeRange} defaultOption={this.state.age} onOptionChange={this.handleAgeChange} />
+                </Col>
+              </Form.Group>
+
+              <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Label column sm="4">Gender</Form.Label>
+                <Col sm="8">
+                  <OptionPicker options={Gender} defaultOption={this.state.gender} onOptionChange={this.handleGenderChange} />
+                </Col>
+              </Form.Group>
+
+              <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Label column sm="4">Daily Activity Level</Form.Label>
+                <Col sm="8">
+                  <OptionPicker options={DailyActivityLevel} defaultOption={this.state.activityLevel} onOptionChange={this.handleActivityLevelChange} />
+                </Col>
+              </Form.Group>
+
+              <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Label column sm="4">Weight (Kg)</Form.Label>
+                <Col sm="8">
+                  <Form.Control type="text" value={this.state.weight} onChange={(x) => function(x){ this.setState({weight: x}); } } />
+                  {/* <Form.Text className="text-muted">in Kg</Form.Text> */}
+                </Col>
+              </Form.Group>
+
+
+              <Button variant="primary" type="submit">
+                Calculate!
+              </Button>
+            </Form>
+            
+        </Row>
+        <Row>
             <Col md={12}>
               {this.state.rmr && 
                 <span>Your resting metabolic rate is {this.state.rmr} Kcal</span>
               } 
             </Col>
-          </Row>
-          {/* <Row>
-            <Col md={12}>
-              <OptionPicker options={DailyActivityLevel} defaultOption={this.state.activityLevel} onOptionChange={this.handleActivityLevelChange} />
-            </Col>
-          </Row> */}
-      </Grid>
+        </Row>
+        
+      </Container>
     );
   }
 }
